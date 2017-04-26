@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration 
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration> 
+    <!--    <properties resource="config.properties"> ссылка на файл со свойствами(ссылка на СУБД, логин, пароль и тп.)
+    </properties> -->
+    
+    <settings><!--в данном блоке можно настроить много параметров. Полный список параметров http://mybatis.github.io/mybatis-3/configuration.html#settings-->
+        <setting name="logImpl" value="LOG4J"/>
+    </settings> 
+
+    <typeAliases>
+        <package name="ru.anatol.trackrenamer.core.entities"/>
+        <!--<typeAlias alias = "Track" type = "ru.anatol.trackrenamer.core.entities.Track"/>-->
+    </typeAliases>
+
+    <typeHandlers>
+        <typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="ru.anatol.trackrenamer.core.enums.InfoTypeEnum"/>
+    </typeHandlers>
+
+    <environments default="development"><!--в данном блоке настраиваются подключения к БД-->
+        <environment id="development"> 
+            <transactionManager type="JDBC"/> 
+            <dataSource type="POOLED"> 
+                <property name="driver" value="org.postgresql.Driver"/>
+                <property name="url" value="jdbc:postgresql://localhost:5432/trackrenamer"/>
+                <property name="username" value="postgres"/>
+                <property name="password" value="postgres"/>
+            </dataSource> 
+            <!--<dataSource type="POOLED"> 
+                <propetitlename="driver" value="${db.driver}"/>
+                <propetitlename="url" value="${db.url}"/>
+                <propetitlename="username" value="${db.username}"/>
+                <propetitlename="password" value="${db.password}"/>
+            </dataSource> -->
+        </environment>
+        <!--<environment id="production">
+            <transactionManager type="MANAGED">
+                
+                <dataSource type="JNDI">
+                    
+                </dataSource>
+            </transactionManager>
+        </environment>-->
+    </environments>
+
+    <mappers><!--в данном блоке необходимо описать маперы, которые используются в проекте-->
+        <mapper resource="track-mapper.xml"/>
+        <mapper resource="info-mapper.xml"/>
+        <!--<mapper class="ru.anatol.trackrenamer.core.mapper.TrackMapper"/>-->
+        <!--<mapper claru.anatol.trackrenamer.core.mapper.TrackInfoMapperapperpper"/>-->
+    </mappers>
+</configuration>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>ru.anatol.track-renamer</groupId>
+    <artifactId>track-renamer</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    
+    <name>TrackRenamer</name>
+    
+    <modules>
+        <module>liquibase</module>
+        <module>core</module>
+    </modules>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <mybatis.version>3.4.2</mybatis.version>
+        <postgresql.version>9.4-1206-jdbc41</postgresql.version>
+        <log4j.version>1.2.12</log4j.version>
+        <mp3agic.version>0.9.0</mp3agic.version>
+    </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency> 
+                <groupId>org.mybatis</groupId> 
+                <artifactId>mybatis</artifactId> 
+                <version>${mybatis.version}</version> 
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mpatric</groupId>
+                <artifactId>mp3agic</artifactId>
+                <version>${mp3agic.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+    
+</project>

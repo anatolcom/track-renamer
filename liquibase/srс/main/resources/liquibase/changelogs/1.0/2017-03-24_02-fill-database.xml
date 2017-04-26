@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="anatol" runOnChange="true"> <!--context="mycontext"-->
+        
+        <comment>Заполнение таблиц</comment>
+        
+        <!---->
+        <!--<insert tableName="artist">-->
+            <!--<coltitlename="id">0</column>-->
+            <!--<coltitlename="title">Illenium feat. Nina Sung</column>-->
+        <!--</insert>-->
+        <!--<insert tableName="artist">-->
+            <!--<coltitlename="id">1</column>-->
+            <!--<coltitlename="title">London Grammar</column>-->
+        <!--</insert>-->
+        <!---->
+        <!--<insert tableName="track">-->
+            <!--<coltitlename="id">0</column>-->
+            <!--<coltitlename="artist_id">0</column>-->
+            <!--<coltitlename="title">Only One</column>-->
+            <!--<coltitlename="filename">Illenium feat. Nina Sung - Only One.mp3</column>-->
+        <!--</insert>-->
+        <!---->
+        <!--<insert tableName="track">-->
+            <!--<coltitlename="id">1</column>-->
+            <!--<coltitlename="artist_id">1</column>-->
+            <!--<coltitlename="title">Hey now (live on KEXP)</column>-->
+            <!--<coltitlename="filename">London Grammar - Hey now (live on KEXP).mp3</column>-->
+        <!--</insert>-->
+        <!---->
+        <!--<insert tableName="track">-->
+            <!--<coltitlename="id">2</column>-->
+            <!--<coltitlename="artist_id">1</column>-->
+            <!--<coltitlename="title">Wicked Game (Chris Isaak Cover)</column>-->
+            <!--<coltitlename="filename">London Grammar - Wicked Game (Chris Isaak Cover).mp3</column>-->
+        <!--</insert>-->
+        
+    </changeSet>
+</databaseChangeLog>
