@@ -22,10 +22,13 @@ public class Track implements Printable {
     private Long size;
     private Long length;
     private Integer bitrate;
+//    @ @Param("bitrate_type")
+//    @MapKey("bitrate_type")
     private BitrateTypeEnum bitrateType;
     private Info fromName;
     private Info id3v1;
     private Info id3v2;
+    private Song song;
 
 //    public Long getId() {
 //        return id;
@@ -108,11 +111,11 @@ public class Track implements Printable {
     }
 
     @Override
-//    public void print() {
-//        System.out.printf("%d %50s %15s %33s %21s\n", id, filename);
-//    }
     public void print() {
-        System.out.printf("%d %50s %15s %33s %21s\n", md5, filename);
+        System.out.printf("%32s %100s %10d %5d %3d %3s\n", md5, filename, size, length, bitrate, bitrateType);
+        if (fromName != null) fromName.print();
+        if (id3v1 != null) id3v1.print();
+        if (id3v2 != null) id3v2.print();
     }
 
 }

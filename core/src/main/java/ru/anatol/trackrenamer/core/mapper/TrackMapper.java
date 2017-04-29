@@ -8,9 +8,8 @@ package ru.anatol.trackrenamer.core.mapper;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.*;
+import ru.anatol.trackrenamer.core.entities.Info;
 import ru.anatol.trackrenamer.core.entities.Track;
 
 /**
@@ -18,20 +17,30 @@ import ru.anatol.trackrenamer.core.entities.Track;
  */
 public interface TrackMapper {
 
-    Track getTrack(Long id);
+    @Results({
+            @Result(property = "bitrateType", column = "bitrate_type"),
+            @Result(property="fromName",  column="from_name_id",  javaType=Info.class, one=@One(select="ru.anatol.trackrenamer.core.mapper.InfoMapper.getInfo")),
+            @Result(property="id3v1",  column="id3v1_id",  javaType=Info.class, one=@One(select="ru.anatol.trackrenamer.core.mapper.InfoMapper.getInfo")),
+            @Result(property="id3v2",  column="id3v2_id",  javaType=Info.class, one=@One(select="ru.anatol.trackrenamer.core.mapper.InfoMapper.getInfo"))
+    })
+    @Select("SELECT t.* " +
+            "FROM track t " +
+            "WHERE t.md5 = #{md5}")
+    Track getTrack(@Param("md5") String md5);
 
-//    @Select("SELECT "
-//            + "  t.id, "
-//            + "  t.filename, "
-//            + "  a.name as artist, "
-//            + "  t.name, "
-//            + "  t.comment "
-//            + "FROM track t "
-//            + "  LEFT JOIN artist a ON t.artist_id = a.id")
-//    List<Track> getTracks();
 
-//    @Select("SELECT md5 FROM track")
-//    Set<String> getMD5Set();
+    @Results({
+            @Result(property = "bitrateType", column = "bitrate_type"),
+            @Result(property="fromName",  column="from_name_id",  javaType=Info.class, one=@One(select="ru.anatol.trackrenamer.core.mapper.InfoMapper.getInfo")),
+            @Result(property="id3v1",  column="id3v1_id",  javaType=Info.class, one=@One(select="ru.anatol.trackrenamer.core.mapper.InfoMapper.getInfo")),
+            @Result(property="id3v2",  column="id3v2_id",  javaType=Info.class, one=@One(select="ru.anatol.trackrenamer.core.mapper.InfoMapper.getInfo"))
+    })
+    @Select("SELECT  t.* " +
+            "FROM track t")
+    List<Track> getTracks();
+
+    @Select("SELECT md5 FROM track")
+    Set<String> getMD5Set();
 
     @Select("SELECT exists(SELECT FROM track WHERE md5 = #{md5}) AS exists")
     boolean existsMD5(String md5);
@@ -42,6 +51,7 @@ public interface TrackMapper {
     void addTrack(Track track);
 
     //    void updateTrack(Track track);
-    void removeTrack(Long id);
+    @Delete("DELETE FROM track WHERE md5 = #{md5} ")
+    void removeTrack(String md5);
 
 }

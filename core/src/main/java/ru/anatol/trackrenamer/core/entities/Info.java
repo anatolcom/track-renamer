@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ru.anatol.trackrenamer.core.entities;
 
 import org.apache.ibatis.type.Alias;
@@ -67,6 +62,6 @@ public class Info implements Printable {
 
     @Override
     public void print() {
-        System.out.printf("%d %10s %25s %25s %20s\n", id, type, artist, title, comment);
+        System.out.printf("%5d %10s %25s %25s %20s\n", id, type, artist, title, comment);
     }
 }

@@ -1,0 +1,30 @@
+------------------------------------
+
+@Results : Use this annotation to map table column with java property that helps to get result in @Select annotation.
+
+@Results({
+        @Result(property = "user_id", column = "id"),
+        @Result(property = "firstName", column = "first_name"),
+
+})
+@Select("SELECT id, name, district from user WHERE id = #{id}")
+User selectUser(int id);
+
+------------------------------------
+
+@ResultMap : Using this annotation, we refer resultmap id.
+
+Suppose in mapper xml, we have a resultmap tag as
+
+<resultMap id="userResult" type="village">
+    <id property="id" column="user_id" />
+    <result property="firstName" column="first_name"/>
+</resultMap>
+
+We can use it with @ResultMap as
+
+@ResultMap("userResult")
+@Select("SELECT id, name, district from user WHERE id = #{id}")
+User selectUser(int id);
+
+------------------------------------

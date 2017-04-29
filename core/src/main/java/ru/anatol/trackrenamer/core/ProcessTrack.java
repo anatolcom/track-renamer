@@ -31,20 +31,17 @@ public class ProcessTrack implements OnFile {
     public void on(File file) {
 
         try {
-
             System.out.println(file.getAbsolutePath());
             String md5Hex = md5Hex(file);
-//            System.out.println(md5Hex + " " + file.getName());
 
-            SqlSession session = MyBatis.openSession();
-            TrackMapper trackMapper = session.getMapper(TrackMapper.class);
-            if (trackMapper.existsMD5(md5Hex)) {
-                System.out.println("------- already exists");
-                return;
-            }
-            InfoMapper infoMapper = session.getMapper(InfoMapper.class);
+            try (SqlSession session = MyBatis.openSession()) {
+                TrackMapper trackMapper = session.getMapper(TrackMapper.class);
+                if (trackMapper.existsMD5(md5Hex)) {
+                    System.out.println("------- already exists");
+                    return;
+                }
+                InfoMapper infoMapper = session.getMapper(InfoMapper.class);
 
-            try {
                 Track track = convert(file);
                 track.setMd5(md5Hex);
                 if (track.getFromName() != null) infoMapper.addInfo(track.getFromName());
@@ -53,10 +50,8 @@ public class ProcessTrack implements OnFile {
                 trackMapper.addTrack(track);
                 session.commit();
             } catch (Exception ex) {
-                session.rollback();
                 ex.printStackTrace();
             }
-
 
         } catch (Exception ex) {
             ex.printStackTrace();
