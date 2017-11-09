@@ -47,7 +47,7 @@ public interface TrackMapper {
 //                    one = @One(select = "ru.anatol.trackrenamer.core.mapper.InfoMapper.getInfo"))
 
             @Result(property = "trackInfos", column = "md5", javaType = List.class,
-                    many = @Many(select = "ru.anatol.trackrenamer.core.mapper.TrackInfoMapper.getTrackInfoByTrack", fetchType = FetchType.EAGER))
+                    many = @Many(select = "ru.anatol.trackrenamer.core.mapper.TrackInfoMapper.getTrackInfosByTrack", fetchType = FetchType.EAGER))
     })
     @Select("SELECT  t.* " +
             "FROM track t " +
