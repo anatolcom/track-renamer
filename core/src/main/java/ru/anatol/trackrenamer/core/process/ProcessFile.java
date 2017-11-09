@@ -1,40 +1,44 @@
-package ru.anatol.trackrenamer.core;
+package ru.anatol.trackrenamer.core.process;
 
 import com.mpatric.mp3agic.*;
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import ru.anatol.file.OnFile;
+import ru.anatol.trackrenamer.core.MyBatis;
 import ru.anatol.trackrenamer.core.entities.Info;
 import ru.anatol.trackrenamer.core.entities.Track;
+import ru.anatol.trackrenamer.core.entities.TrackInfo;
 import ru.anatol.trackrenamer.core.enums.BitrateTypeEnum;
 import ru.anatol.trackrenamer.core.enums.InfoTypeEnum;
 import ru.anatol.trackrenamer.core.mapper.InfoMapper;
+import ru.anatol.trackrenamer.core.mapper.TrackInfoMapper;
 import ru.anatol.trackrenamer.core.mapper.TrackMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by Anatol on 26.04.2017.
  */
-public class ProcessTrack implements OnFile {
+public class ProcessFile implements OnFile {
+
+    private final SqlSessionFactory sessionFactory = MyBatis.getSqlSessionFactory();
 
     @Override
     public void on(File file) {
-
         try {
             System.out.println(file.getAbsolutePath());
             String md5Hex = md5Hex(file);
 
-            try (SqlSession session = MyBatis.openSession()) {
+            try (SqlSession session = sessionFactory.openSession()) {
                 TrackMapper trackMapper = session.getMapper(TrackMapper.class);
                 if (trackMapper.existsMD5(md5Hex)) {
                     System.out.println("------- already exists");
@@ -44,15 +48,23 @@ public class ProcessTrack implements OnFile {
 
                 Track track = convert(file);
                 track.setMd5(md5Hex);
-                if (track.getFromName() != null) infoMapper.addInfo(track.getFromName());
-                if (track.getId3v1() != null) infoMapper.addInfo(track.getId3v1());
-                if (track.getId3v2() != null) infoMapper.addInfo(track.getId3v2());
                 trackMapper.addTrack(track);
-                session.commit();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
 
+                TrackInfoMapper trackInfoMapper = session.getMapper(TrackInfoMapper.class);
+                for (TrackInfo trackInfo : track.getTrackInfos()) {
+                    if (trackInfo.getInfo().getId() == null) {
+                        Info equalsInfo = infoMapper.getEqualsInfo(trackInfo.getInfo());
+                        if (equalsInfo != null) {
+                            trackInfo.setInfo(equalsInfo);
+                        } else {
+                            infoMapper.addInfo(trackInfo.getInfo());
+                        }
+                    }
+                    trackInfoMapper.addTrackInfo(trackInfo);
+                };
+
+                session.commit();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -69,9 +81,28 @@ public class ProcessTrack implements OnFile {
         track.setLength(mp3file.getLengthInSeconds());
         track.setBitrate(mp3file.getBitrate());
         track.setBitrateType(mp3file.isVbr() ? BitrateTypeEnum.VBR : BitrateTypeEnum.CBR);
-        track.setFromName(fromFileName(file.getName()));
-        if (mp3file.hasId3v1Tag()) track.setId3v1(fromID3v1(mp3file.getId3v1Tag()));
-        if (mp3file.hasId3v2Tag()) track.setId3v2(fromID3v2(mp3file.getId3v2Tag()));
+        track.setTrackInfos(new ArrayList<>(3));
+        if (true) {
+            TrackInfo fileName = new TrackInfo();
+            fileName.setType(InfoTypeEnum.FILE_NAME);
+            fileName.setTrack(track);
+            fileName.setInfo(fromFileName(file.getName()));
+            track.getTrackInfos().add(fileName);
+        }
+        if (mp3file.hasId3v1Tag()) {
+            TrackInfo id3v1 = new TrackInfo();
+            id3v1.setType(InfoTypeEnum.ID3V1);
+            id3v1.setTrack(track);
+            id3v1.setInfo(fromID3v1(mp3file.getId3v1Tag()));
+            track.getTrackInfos().add(id3v1);
+        }
+        if (mp3file.hasId3v2Tag()) {
+            TrackInfo id3v2 = new TrackInfo();
+            id3v2.setType(InfoTypeEnum.ID3V2);
+            id3v2.setTrack(track);
+            id3v2.setInfo(fromID3v2(mp3file.getId3v2Tag()));
+            track.getTrackInfos().add(id3v2);
+        }
         return track;
     }
 
@@ -90,31 +121,35 @@ public class ProcessTrack implements OnFile {
     }
 
     private Info fromFileName(String filename) {
-        Info info = new Info();
-        info.setType(InfoTypeEnum.FILE_NAME);
-
-//        filename.lastIndexOf("/");
-//        info.setArtist(id3v1.getArtist());
-//        info.setTitle(id3v1.getTitle());
-//        info.setComment(id3v1.getComment());
-        return info;
+        ProcessFilename processFilename = new ProcessFilename();
+        return processFilename.on(filename);
     }
 
     private Info fromID3v1(ID3v1 id3v1) {
         Info info = new Info();
-        info.setType(InfoTypeEnum.ID3V1);
-        info.setArtist(id3v1.getArtist());
-        info.setTitle(id3v1.getTitle());
-        info.setComment(id3v1.getComment());
+        if (id3v1.getArtist() != null && !id3v1.getArtist().isEmpty()) {
+            info.setArtist(id3v1.getArtist());
+        }
+        if (id3v1.getTitle() != null && !id3v1.getTitle().isEmpty()) {
+            info.setTitle(id3v1.getTitle());
+        }
+        if (id3v1.getComment() != null && !id3v1.getComment().isEmpty()) {
+            info.setComment(id3v1.getComment());
+        }
         return info;
     }
 
     private Info fromID3v2(ID3v2 id3v2) {
         Info info = new Info();
-        info.setType(InfoTypeEnum.ID3V2);
-        info.setArtist(id3v2.getArtist());
-        info.setTitle(id3v2.getTitle());
-        info.setComment(id3v2.getComment());
+        if (id3v2.getArtist() != null && !id3v2.getArtist().isEmpty()) {
+            info.setArtist(id3v2.getArtist());
+        }
+        if (id3v2.getTitle() != null && !id3v2.getTitle().isEmpty()) {
+            info.setTitle(id3v2.getTitle());
+        }
+        if (id3v2.getComment() != null && !id3v2.getComment().isEmpty()) {
+            info.setComment(id3v2.getComment());
+        }
         return info;
     }
 

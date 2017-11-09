@@ -10,15 +10,6 @@
         <setting name="logImpl" value="LOG4J"/>
     </settings> 
 
-    <typeAliases>
-        <package name="ru.anatol.trackrenamer.core.entities"/>
-        <!--<typeAlias alias = "Track" type = "ru.anatol.trackrenamer.core.entities.Track"/>-->
-    </typeAliases>
-
-    <typeHandlers>
-        <typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="ru.anatol.trackrenamer.core.enums.InfoTypeEnum"/>
-    </typeHandlers>
-
     <environments default="development"><!--в данном блоке настраиваются подключения к БД-->
         <environment id="development"> 
             <transactionManager type="JDBC"/> 
@@ -46,9 +37,9 @@
     </environments>
 
     <mappers><!--в данном блоке необходимо описать маперы, которые используются в проекте-->
-        <mapper resource="track-mapper.xml"/>
-        <mapper resource="info-mapper.xml"/>
-        <!--<mapper class="ru.anatol.trackrenamer.core.mapper.TrackMapper"/>-->
-        <!--<mapper claru.anatol.trackrenamer.core.mapper.TrackInfoMapperapperpper"/>-->
+        <mapper class="ru.anatol.trackrenamer.core.mapper.TrackMapper"/>
+        <mapper class="ru.anatol.trackrenamer.core.mapper.InfoMapper"/>
+        <mapper class="ru.anatol.trackrenamer.core.mapper.TrackInfoMapper"/>
+        <mapper class="ru.anatol.trackrenamer.core.mapper.SongMapper"/>
     </mappers>
 </configuration>

@@ -9,26 +9,28 @@ import org.apache.ibatis.type.Alias;
 import ru.anatol.Printable;
 import ru.anatol.trackrenamer.core.enums.BitrateTypeEnum;
 
+import java.util.List;
+
 /**
- *
  * @author Anatol
  */
 @Alias("track")
 public class Track implements Printable {
 
-//    private Long id;
+    //    private Long id;
     private String md5;
     private String filename;
     private Long size;
     private Long length;
     private Integer bitrate;
-//    @ @Param("bitrate_type")
+    //    @ @Param("bitrate_type")
 //    @MapKey("bitrate_type")
     private BitrateTypeEnum bitrateType;
-    private Info fromName;
-    private Info id3v1;
-    private Info id3v2;
-    private Song song;
+    private List<TrackInfo> trackInfos;
+//    private Info fromName;
+//    private Info id3v1;
+//    private Info id3v2;
+//    private Song song;
 
 //    public Long getId() {
 //        return id;
@@ -86,36 +88,48 @@ public class Track implements Printable {
         this.bitrateType = bitrateType;
     }
 
-    public Info getFromName() {
-        return fromName;
+//    public Info getFromName() {
+//        return fromName;
+//    }
+//
+//    public void setFromName(Info fromName) {
+//        this.fromName = fromName;
+//    }
+//
+//    public Info getId3v1() {
+//        return id3v1;
+//    }
+//
+//    public void setId3v1(Info id3v1) {
+//        this.id3v1 = id3v1;
+//    }
+//
+//    public Info getId3v2() {
+//        return id3v2;
+//    }
+//
+//    public void setId3v2(Info id3v2) {
+//        this.id3v2 = id3v2;
+//    }
+
+    public List<TrackInfo> getTrackInfos() {
+        return trackInfos;
     }
 
-    public void setFromName(Info fromName) {
-        this.fromName = fromName;
-    }
-
-    public Info getId3v1() {
-        return id3v1;
-    }
-
-    public void setId3v1(Info id3v1) {
-        this.id3v1 = id3v1;
-    }
-
-    public Info getId3v2() {
-        return id3v2;
-    }
-
-    public void setId3v2(Info id3v2) {
-        this.id3v2 = id3v2;
+    public void setTrackInfos(List<TrackInfo> trackInfos) {
+        this.trackInfos = trackInfos;
     }
 
     @Override
     public void print() {
         System.out.printf("%32s %100s %10d %5d %3d %3s\n", md5, filename, size, length, bitrate, bitrateType);
-        if (fromName != null) fromName.print();
-        if (id3v1 != null) id3v1.print();
-        if (id3v2 != null) id3v2.print();
+//        if (fromName != null) fromName.print();
+//        if (id3v1 != null) id3v1.print();
+//        if (id3v2 != null) id3v2.print();
     }
 
+    @Override
+    public String toString() {
+        return filename + " " + bitrateType + " " + bitrate;
+    }
 }

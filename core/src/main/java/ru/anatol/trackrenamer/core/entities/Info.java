@@ -10,7 +10,7 @@ import ru.anatol.trackrenamer.core.enums.InfoTypeEnum;
 @Alias("info")
 public class Info implements Printable {
     private Long id;
-    private InfoTypeEnum type;
+//    private InfoTypeEnum type;
     private String artist;
     private String title;
     private String comment;
@@ -22,14 +22,14 @@ public class Info implements Printable {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public InfoTypeEnum getType() {
-        return type;
-    }
-
-    public void setType(InfoTypeEnum type) {
-        this.type = type;
-    }
+//
+//    public InfoTypeEnum getType() {
+//        return type;
+//    }
+//
+//    public void setType(InfoTypeEnum type) {
+//        this.type = type;
+//    }
 
     public String getArtist() {
         return artist;
@@ -57,11 +57,11 @@ public class Info implements Printable {
 
     @Override
     public String toString() {
-        return type + ": " + artist + " - " + title;
+        return artist + " - " + title;
     }
 
     @Override
     public void print() {
-        System.out.printf("%5d %10s %25s %25s %20s\n", id, type, artist, title, comment);
+        System.out.printf("%5d %10s %25s %20s\n", id, artist, title, comment);
     }
 }

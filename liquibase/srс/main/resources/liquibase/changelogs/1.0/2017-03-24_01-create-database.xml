@@ -9,54 +9,120 @@
 
         <comment>Создание таблиц</comment>
 
-        <createTable tableName="info">
+        <createTable tableName="artist">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="type" type="VARCHAR(10)">
+            <column name="value" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="artist_variant">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="artist_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_artist_variant" references="artist(id)"/>
+            </column>
+            <column name="value" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
+        </createTable>
+
+        <createTable tableName="title">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="value" type="VARCHAR(256)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="title_variant">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_title_variant" references="title(id)"/>
+            </column>
+            <column name="value" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <!-- вариант иформации о треке -->
+        <createTable tableName="info">
+            <!-- идентификатор -->
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <!-- имя артиста -->
             <column name="artist" type="VARCHAR(256)">
                 <constraints nullable="true"/>
             </column>
+            <!-- название песни -->
             <column name="title" type="VARCHAR(256)">
                 <constraints nullable="true"/>
             </column>
+            <!-- комментарий -->
             <column name="comment" type="VARCHAR(256)">
                 <constraints nullable="true"/>
             </column>
         </createTable>
 
+        <!-- информафия о треке -->
         <createTable tableName="track">
             <!--<column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>-->
+            <!-- хэш файла, для того что бы не считывать файлы повторно -->
             <column autoIncrement="false" name="md5" type="VARCHAR(32)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
+            <!-- название файла на момент чтения -->
             <column name="filename" type="VARCHAR(256)">
                 <constraints nullable="false"/>
             </column>
+            <!-- размер файла -->
             <column name="size" type="NUMBER">
                 <constraints nullable="false"/>
             </column>
+            <!-- длинна трека в секундах -->
             <column name="length" type="NUMBER">
                 <constraints nullable="false"/>
             </column>
+            <!-- битрэйт -->
             <column name="bitrate" type="NUMBER">
                 <constraints nullable="false"/>
             </column>
+            <!-- тип бтрэйта [CBR, VBR] -->
             <column name="bitrate_type" type="VARCHAR(3)">
                 <constraints nullable="false"/>
             </column>
-            <column name="from_name_id" type="BIGINT">
-                <constraints nullable="true" foreignKeyName="fk_from_name" references="info(id)"/>
+            <!-- идентификатор правильного варианта иформации -->
+            <column name="right_info_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_right_info_id" references="info(id)"/>
             </column>
-            <column name="id3v1_id" type="BIGINT">
-                <constraints nullable="true" foreignKeyName="fk_id3v1" references="info(id)"/>
+        </createTable>
+
+        <createTable tableName="track_info">
+            <!-- идентификатор -->
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="id3v2_id" type="BIGINT">
-                <constraints nullable="true" foreignKeyName="fk_id3v2" references="info(id)"/>
+            <!-- тип информации ID3v1, ID3v2, FileName -->
+            <column name="type" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- идентификатор трека -->
+            <column name="track_md5" type="VARCHAR(32)">
+                <constraints nullable="false" foreignKeyName="fk_track_md5" references="track(md5)"/>
+            </column>
+            <!-- идентификатор информации -->
+            <column name="info_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_info_id" references="info(id)"/>
             </column>
         </createTable>
 
